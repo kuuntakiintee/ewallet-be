@@ -10,7 +10,7 @@ import (
 	"e-wallet-go/internal/repository"
 	"e-wallet-go/internal/services"
 
-	"github.com/gin-contrib/cors" // <--- JANGAN LUPA INI
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 )
@@ -22,7 +22,6 @@ func main() {
 
 	db := config.ConnectDB()
 
-	// Setup Dependencies
 	userRepo := repository.NewUserRepository(db)
 	walletRepo := repository.NewWalletRepository(db)
 
@@ -35,9 +34,6 @@ func main() {
 	walletHandler := handlers.NewWalletHandler(walletService)
 
 	r := gin.Default()
-
-	// --- 1. PASANG CORS DISINI (PALING ATAS) ---
-	// Ini supaya server bisa jawab request "OPTIONS" tadi
 	r.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"http://localhost:5173"}, // Sesuaikan port Vue kamu
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
@@ -46,9 +42,6 @@ func main() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}))
-	// -------------------------------------------
-
-	// --- 2. BARU RUTE-RUTE DIBAWAHNYA ---
 
 	// Public Routes
 	api := r.Group("/api")
